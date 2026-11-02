@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>CCS LAB IDE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#fff;--side:#f3f3f3;--fg:#333;--bd:#ddd;--ac:#007acc;--k:#0000ff;--s:#a31515;--c:#008000;--n:#098658;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#1e1e1e;--side:#252526;--fg:#d4d4d4;--bd:#3c3c3c;--k:#569cd6;--s:#ce9178;--c:#6a9955;--n:#b5cea8}}
+:root[data-theme=dark]{--bg:#1e1e1e;--side:#252526;--fg:#d4d4d4;--bd:#3c3c3c;--k:#569cd6;--s:#ce9178;--c:#6a9955;--n:#b5cea8}
+html,body{height:100%;margin:0}body{background:var(--bg);color:var(--fg);font:14px system-ui,sans-serif;display:flex;flex-direction:column}
+nav{background:var(--ac);color:#fff;display:flex;gap:14px;align-items:center;padding:6px 12px}nav b{margin-right:auto}nav button{background:none;border:0;color:#fff;cursor:pointer;font:inherit}
+#app{flex:1;display:flex;min-height:0}#side{width:270px;background:var(--side);border-right:1px solid var(--bd);overflow:auto;padding:8px}
+#side input{width:100%;box-sizing:border-box;background:var(--bg);color:var(--fg);border:1px solid var(--bd);padding:4px;margin-bottom:8px}
+.it{padding:4px 8px;cursor:pointer;border-radius:3px}.it:hover{background:var(--bd)}.it.on{background:var(--ac);color:#fff}.dim{opacity:.55}
+main{flex:1;display:flex;flex-direction:column;min-width:0}#tabs{display:flex;border-bottom:1px solid var(--bd);background:var(--side)}
+#tabs button,.tb button{background:none;border:0;color:var(--fg);padding:8px 14px;cursor:pointer;font:inherit}#tabs .on{border-bottom:2px solid var(--ac)}
+.tb{display:flex;gap:4px;padding:4px 8px;align-items:center;border-bottom:1px solid var(--bd)}.tb button{border:1px solid var(--bd);padding:2px 8px}
+#view{flex:1;overflow:auto;padding:16px}pre{margin:0;font-family:Consolas,monospace;counter-reset:l}
+pre div{counter-increment:l;white-space:pre;min-height:1.4em}pre div:before{content:counter(l);display:inline-block;width:3em;margin-right:1em;text-align:right;opacity:.45}
+.k{color:var(--k)}.s{color:var(--s)}.c{color:var(--c)}.n{color:var(--n)}.warn{border-left:3px solid #e8a317;padding:6px 10px;margin:8px 0;background:var(--side)}
+.fs{position:fixed;inset:0;z-index:9;background:var(--bg);overflow:auto;padding:16px}
+@media(max-width:700px){#side{position:absolute;z-index:5;height:100%;display:none}#side.open{display:block}}
+</style></head><body>
+<nav><b>CCS LAB IDE</b><button onclick="go(0)">Experiments</button><button onclick="document.getElementById('side').classList.toggle('open')">☰ Explorer</button><button onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme=='light'?'dark':'light'">◐ Theme</button></nav>
+<div id="app"><div id="side"><input id="q" placeholder="Search experiments" oninput="tree()"><div id="tree"></div></div>
+<main><div id="tabs"></div><div class="tb" id="tb"></div><div id="view"></div></main></div>
+<script>
+const E=[
+{id:"1(a)",t:"Caesar Cipher",lang:"Java",file:"CaesarCipher.java",aim:"To encrypt and decrypt the given message by using Caesar Cipher encryption algorithm.",
+algo:["Each letter in the plaintext is replaced by a letter some fixed number of positions down the alphabet.","With a left shift of 3, D would be replaced by A, E would become B, and so on.","Letters are mapped to numbers A=0, B=1, ... Z=25.","Encryption: En(x) = (x + n) mod 26","Decryption: Dn(x) = (x - n) mod 26"],
+out:`Simulating Caesar Cipher\n -------------------------\nInput : Anna University\nEncrypted Message : Dqqd Xqlyhuvlwb\nDecrypted Message : Anna University`,
+res:"Thus the program for caesar cipher encryption and decryption algorithm has been implemented and the output verified successfully.",
+code:String.raw`public class caesarCipher {
+public static String encode(String enc, int offset) {
+offset = offset % 26 + 26;
+StringBuilder encoded = new StringBuilder();
+for (char i : enc.toCharArray()) {
+if (Character.isLetter(i)) {
+if (Character.isUpperCase(i)) {
+encoded.append((char) ('A' + (i - 'A' + offset) % 26));
+} else {
+encoded.append((char) ('a' + (i - 'a' + offset) % 26));
+}
+} else {
+encoded.append(i);
+}
+}
+return encoded.toString();
+}
+public static String decode(String enc, int offset) {
+return encode(enc, 26 - offset);
+}
+public static void main(String[] args) throws java.lang.Exception {
+String msg = "Anna University";
+System.out.println("Simulating Caesar Cipher\n -------------------------");
+System.out.println("Input : " + msg);
+System.out.printf("Encrypted Message : ");
+System.out.println(caesarCipher.encode(msg, 3));
+System.out.printf("Decrypted Message : ");
+System.out.println(caesarCipher.decode(caesarCipher.encode(msg, 3), 3));
+}
+}`},
+{id:"1(b)",t:"Playfair Cipher",lang:"Java",file:"playfairCipher.java",aim:"To implement a program to encrypt a plain text and decrypt a cipher text using play fair Cipher substitution technique.",out:`Simulating Playfair Cipher\nInput Message : Security Lab\nEncrypted Message : EABPUGYANSEZ\nDecrypted Message : SECURITYLABX`,res:"Thus the program for playfair cipher encryption and decryption algorithm has been implemented and the output verified successfully."},
+{id:"1(c)",t:"Hill Cipher",lang:"Java",file:"HillCipher.java",aim:"To implement a program to encrypt and decrypt using the Hill cipher substitution technique",out:`Simulating Hill Cipher\nInput Message : SecurityLaboratory\nPadded Message : SECURITYLABORATORY\nEncrypted Message : EACSDKLCAEFQDUKSXU\nDecrypted Message : SECURITYLABORATORY`,res:"Thus the program for hill cipher encryption and decryption algorithm has been implemented and the output verified successfully."},
+{id:"2(a)",t:"Rail Fence Cipher",lang:"Java",file:"railFenceCipher.java",aim:"To implement a program for encryption and decryption using rail fence transposition technique.",out:`Simulating Railfence Cipher\nInput Message : Anna University, Chennai\nEncrypted Message : An nvriy hnanaUiest,Ceni\nDecrypted Message : Anna University, Chennai`,res:"Thus the java program for Rail Fence Transposition Technique has been implemented and the output verified successfully."},
+{id:"2(b)",t:"Row and Column Transformation Technique",lang:"Java",file:"TransCipher.java",aim:"To implement a program for encryption and decryption by using row and column transformation technique.",
+algo:["Consider the plain text hello world and apply the simple columnar transposition technique (rows of 4: hell / owor / ld).","The plain text characters are placed horizontally and the cipher text is created with vertical format as: holewdlo lr.","The receiver uses the same table to decrypt the cipher text to plain text."],
+out:`Enter the plain text\nSecurity Lab\nSecurityLab\nSreictuy`,res:"Thus the java program for Row and Column Transposition Technique has been implemented and the output verified successfully.",
+code:String.raw`import java.util.*;
+public class TransCipher {
+public static void main(String args[]) {
+Scanner sc = new Scanner(System.in);
+System.out.println("Enter the plain text");
+String pl = sc.nextLine();
+sc.close();
+String s = "";
+int start = 0;
+for (int i = 0; i < pl.length(); i++) {
+if (pl.charAt(i) == ' ') {
+s = s + pl.substring(start, i);
+start = i + 1;
+}
+}
+s = s + pl.substring(start);
+System.out.print(s);
+System.out.println();
+// end of space deletion
+int k = s.length();
+int l = 0;
+int col = 4;
+int row = s.length() / col;
+char ch[][] = new char[row][col];
+for (int i = 0; i < row; i++) {
+for (int j = 0; j < col; j++) {
+if (l < k) {
+ch[i][j] = s.charAt(l);
+l++;
+} else {
+ch[i][j] = '#';
+}
+}
+}
+// arranged in matrix
+char trans[][] = new char[col][row];
+for (int i = 0; i < row; i++) {
+for (int j = 0; j < col; j++) {
+trans[j][i] = ch[i][j];
+}
+}
+for (int i = 0; i < col; i++) {
+for (int j = 0; j < row; j++) {
+System.out.print(trans[i][j]);
+}
+}
+// display
+System.out.println();
+}
+}`,note:"PDF output shows 'Sreictuy' (8 chars) for an 11-char input; the code as printed would not produce exactly this. Shown verbatim from the manual — flagged for review."},
+{id:"3",t:"Data Encryption Standard (DES) Algorithm",lang:"Java",file:"DES.java",aim:"To use Data Encryption Standard (DES) Algorithm for a practical application like User Message Encryption.",out:`Message Encryption Using DES Algorithm\nMessage [Byte Format] : [B@4dcbadb4\nMessage : Secret Information\nEncrypted Message: [B@504bae78\nDecrypted Message: Secret Information`,res:"Thus the java program for DES Algorithm has been implemented and the output verified successfully."},
+{id:"4",t:"Advanced Encryption Standard (AES) Algorithm",lang:"Java",file:"AES.java",aim:"To use Advanced Encryption Standard (AES) Algorithm for a practical application like URL Encryption.",out:`URL Encryption Using AES Algorithm\nOriginal URL : www.annauniv.edu\nEncrypted URL : vibpFJW6Cvs5Y+L7t4N6YWWe07+JzS1d3CU2h3mEvEg=\nDecrypted URL : www.annauniv.edu`,res:"Thus the java program for AES Algorithm has been implemented for URL Encryption and the output verified successfully."},
+{id:"5",t:"RSA Algorithm Using HTML & JavaScript",lang:"HTML",file:"rsa.html",aim:"To implement RSA (Rivest–Shamir–Adleman) algorithm by using HTML and Javascript.",out:`(Screenshot in manual) p=53, q=59, message=89 → Public Key 3127, Exponent 3, Private Key 2011, Cipher Text 1394`,res:"Thus the RSA algorithm has been implemented using HTML & CSS and the output has been verified successfully."},
+{id:"6",t:"Diffie-Hellman Key Exchange Algorithm",lang:"Java",file:"DiffieHellman.java",aim:"To implement the Diffie-Hellman Key Exchange algorithm for a given problem.",
+algo:["Alice and Bob publicly agree to use a modulus p = 23 and base g = 5.","Alice chooses a secret integer a = 4, then sends Bob A = g^a mod p = 4.","Bob chooses a secret integer b = 3, then sends Alice B = g^b mod p = 10.","Alice computes s = B^a mod p = 18.","Bob computes s = A^b mod p = 18.","Alice and Bob now share a secret (the number 18)."],
+out:`simulation of Diffie-Hellman key exchange algorithm\nAlice Sends : 4.0\nBob Computes : 18.0\nBob Sends : 10.0\nAlice Computes : 18.0\nShared Secret : 18.0\nSuccess: Shared Secrets Matches! 18.0`,res:"Thus the Diffie-Hellman key exchange algorithm has been implemented using Java Program and the output has been verified successfully.",
+code:String.raw`class DiffieHellman {
+public static void main(String args[]) {
+int p = 23; /* publicly known (prime number) */
+int g = 5; /* publicly known (primitive root) */
+int x = 4; /* only Alice knows this secret */
+int y = 3; /* only Bob knows this secret */
+double aliceSends = (Math.pow(g, x)) % p;
+double bobComputes = (Math.pow(aliceSends, y)) % p;
+double bobSends = (Math.pow(g, y)) % p;
+double aliceComputes = (Math.pow(bobSends, x)) % p;
+double sharedSecret = (Math.pow(g, (x * y))) % p;
+System.out.println("simulation of Diffie-Hellman key exchange algorithm\n--");
+System.out.println("Alice Sends : " + aliceSends);
+System.out.println("Bob Computes : " + bobComputes);
+System.out.println("Bob Sends : " + bobSends);
+System.out.println("Alice Computes : " + aliceComputes);
+System.out.println("Shared Secret : " + sharedSecret);
+/* shared secrets should match and equality is transitive */
+if ((aliceComputes == sharedSecret) && (aliceComputes == bobComputes))
+System.out.println("Success: Shared Secrets Matches! " + sharedSecret);
+else
+System.out.println("Error: Shared Secrets does not Match");
+}
+}`},
+{id:"7",t:"Implementation of SHA-1 Algorithm",lang:"Java",file:"SHA1Digest.java",aim:"To write a program to calculate the 160-bit message digest of an input text using the SHA-1 algorithm in Java.",
+algo:["Create a MessageDigest instance for the \"SHA-1\" algorithm.","Accept the input string from the user.","Convert the plaintext input string into a raw byte array.","Compute the digest, giving an array of bytes (the 160-bit hash).","Convert each byte of the digest into a 2-digit hexadecimal string.","Print the final hexadecimal SHA-1 string."],
+out:`Enter the input text: Cryptography and Network Security\n--- Results ---\nOriginal Text : Cryptography and Network Security\nSHA-1 Digest : d29dc0a4ba436e2f1837bb523efd627f12e8ba99`,res:"The program to calculate the message digest using the SHA-1 algorithm was successfully executed, and the 160-bit hash value was accurately printed in a 40-character hexadecimal format.",
+code:String.raw`import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Scanner;
+public class SHA1Digest {
+public static void main(String[] args) {
+Scanner scanner = new Scanner(System.in);
+// Step 2: Accept the input text
+System.out.print("Enter the input text: ");
+String inputText = scanner.nextLine();
+try {
+// Step 1: Initialize the SHA-1 engine
+MessageDigest md = MessageDigest.getInstance("SHA-1");
+// Step 3 & 4: Convert to bytes and compute digest
+byte[] messageDigestBytes = md.digest(inputText.getBytes());
+// Step 5: Convert the byte array into hexadecimal string
+StringBuilder hexString = new StringBuilder();
+for (byte b : messageDigestBytes)
+{
+// Ensure a two-digit hexadecimal representation
+String hex = Integer.toHexString(0xff & b);
+if (hex.length() == 1) {
+hexString.append('0');
+}
+hexString.append(hex);
+}
+// Step 6: Print output
+System.out.println("\n--- Results ---");
+System.out.println("Original Text : " + inputText);
+System.out.println("SHA-1 Digest : " + hexString.toString());
+} catch (NoSuchAlgorithmException e) {
+System.err.println("Error: SHA-1 algorithm not supported on this system.");
+} finally {
+scanner.close();
+}
+}
+}`},
+{id:"8",t:"Implementation of MD5 Algorithm",lang:"Java",file:"MD5.java",aim:"To write a java Program to implement MD5 algorithm.",
+algo:["Start the program","(Step 2 is blank in the manual — flagged for review)","Call the Static getInstance method with hashing MD5","The digest() method is called to calculate message digest of an input; digest() returns array of byte","Convert byte array into signum representation","Convert message digest into hex value","Print the hash code generated by MD5 as an output.","Stop the program"],
+out:`E:\\Java\\jdk1.8.0_171\\bin>javac MD5.java\nE:\\Java\\jdk1.8.0_171\\bin>java MD5\nYour HashCode Generated by MD5 is: e0d00b9f337d357c6faa2f8ceae4a60d`,res:"Thus the java program for implementing the MD5 algorithm was executed and verified successfully.",
+code:String.raw`import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+// Java program to calculate MD5 hash value
+public class MD5 {
+public static String getMd5(String input)
+{
+try {
+// Static getInstance method is called with hashing MD5
+MessageDigest md = MessageDigest.getInstance("MD5");
+// digest() method is called to calculate message digest
+// of an input digest() return array of byte
+byte[] messageDigest = md.digest(input.getBytes());
+// Convert byte array into signum representation
+BigInteger no = new BigInteger(1, messageDigest);
+// Convert message digest into hex value
+String hashtext = no.toString(16);
+while (hashtext.length() < 32) {
+hashtext = "0" + hashtext;
+}
+return hashtext;
+}
+// For specifying wrong message digest algorithms
+catch (NoSuchAlgorithmException e) {
+throw new RuntimeException(e);
+}
+}
+// Driver code
+public static void main(String args[]) throws NoSuchAlgorithmException
+{
+String s = "cryptography";
+System.out.println("Your HashCode Generated by MD5 is: " +
+getMd5(s));
+}
+}`},
+{id:"9",t:"Digital Signature Standard",lang:"Java",file:"CreatingDigitalSignature.java",aim:"To implement the SIGNATURE SCHEME - Digital Signature Standard.",
+algo:["Create a KeyPairGenerator object.","Initialize the KeyPairGenerator object.","Generate the KeyPairGenerator.","Get the private key from the pair.","Create a signature object.","Initialize the Signature object.","Add data to the Signature object","Calculate the Signature"],
+out:`Enter some text\nHi how are you\nDigital signature for given text: 0=@gRD???-?.???? /yGL?i??a!?`,res:"Thus the Digital Signature Standard Scheme has been implemented and the Output was verified successfully.",
+code:String.raw`import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.util.Scanner;
+public class CreatingDigitalSignature {
+public static void main(String args[]) throws Exception {
+Scanner sc = new Scanner(System.in);
+System.out.println("Enter some text");
+String msg = sc.nextLine();
+KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("DSA");
+keyPairGen.initialize(2048);
+KeyPair pair = keyPairGen.generateKeyPair();
+PrivateKey privKey = pair.getPrivate();
+Signature sign = Signature.getInstance("SHA256withDSA");
+sign.initSign(privKey);
+byte[] bytes = "msg".getBytes(); sign.update(bytes);
+byte[] signature = sign.sign();
+System.out.println("Digital signature for given text: "+new String(signature,
+"UTF8"));
+}
+}`,note:"The PDF line break split 'getBytes();' across the page; rejoined here. The manual signs the literal \"msg\" rather than the variable msg — kept as printed, flagged for review."},
+{id:"10",t:"Demonstration of Intrusion Detection System (Content Beyond the Syllabus)",lang:"Procedure",file:"snort-steps.txt",aim:"To demonstrate Intrusion Detection System (IDS) using Snort software tool.",out:"(Screenshots in manual: 'snort -W' interface list and Snort console alerts.)",res:"Thus the Intrusion Detection System(IDS) has been demonstrated by using the Open Source Snort Intrusion Detection Tool."}
+];
+let cur=0,tab="Overview",fs=14,full=false;
+const $=i=>document.getElementById(i),esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const hl=s=>esc(s).replace(/(\/\/.*|\/\*.*?\*\/)|("(?:\\.|[^"\\])*")|\b(public|class|static|void|import|new|try|catch|return|for|if|else|final|int|byte|char|String|throws|finally|private|double|boolean)\b|\b(\d+)\b/g,(m,c,s2,k,n)=>`<span class="${c?'c':s2?'s':k?'k':'n'}">${m}</span>`);
+function tree(){const q=$("q").value.toLowerCase();$("tree").innerHTML="<b>CRYPTOGRAPHY AND NETWORK SECURITY</b>"+E.map((e,i)=>(e.id+" "+e.t).toLowerCase().includes(q)?`<div class="it ${i==cur?'on':''} ${e.code||e.id=="10"?'':'dim'}" onclick="go(${i})">${e.id}. ${e.t}</div>`:"").join("")}
+function go(i){cur=i;tab="Overview";draw();$("side").classList.remove("open")}
+function draw(){const e=E[cur];tree();
+$("tabs").innerHTML=["Overview","Algorithm","Source Code","Output"].map(t=>`<button class="${t==tab?'on':''}" onclick="tab='${t}';draw()">${t}</button>`).join("");
+$("tb").innerHTML=`<button onclick="go(Math.max(0,cur-1))">◀ Prev</button><button onclick="go(Math.min(E.length-1,cur+1))">Next ▶</button><span style="margin-left:auto">${e.lang}</span>`+(tab=="Source Code"&&e.code?`<button onclick="cp()">Copy</button><button onclick="dl()">Download</button><button onclick="fs+=2;draw()">A+</button><button onclick="fs-=2;draw()">A−</button><button onclick="full=!full;draw()">Fullscreen</button>`:"");
+let h=`<h2>Ex. ${e.id} — ${esc(e.t)}</h2>`;
+if(tab=="Overview")h+=`<p>Date: ____________</p><h3>AIM</h3><p>${esc(e.aim)}</p><h3>RESULT</h3><p>${esc(e.res)}</p>`;
+if(tab=="Algorithm")h+=e.algo?`<ol>${e.algo.map(a=>`<li>${esc(a)}</li>`).join("")}</ol>`:`<div class="warn">Algorithm text not loaded yet for this experiment.</div>`;
+if(tab=="Source Code")h+=(e.note?`<div class="warn">⚠ Review: ${esc(e.note)}</div>`:"")+(e.code?`<pre style="font-size:${fs}px">${e.code.split("\n").map(l=>`<div>${hl(l)}</div>`).join("")}</pre>`:`<div class="warn">${e.id=="10"?"No program for this experiment — see the configuration steps in the manual.":"Source code for this experiment has not been loaded into this build yet. Nothing is invented; it will be added from the PDF."}</div>`);
+if(tab=="Output")h+=`<pre style="font-size:${fs}px">${esc(e.out)}</pre><div class="warn">Output copied from the manual. Code execution is not available in this build (no backend/sandbox); nothing is simulated.</div>`;
+$("view").className=full&&tab=="Source Code"?"fs":"";$("view").innerHTML=h}
+function cp(){navigator.clipboard.writeText(E[cur].code)}
+function dl(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([E[cur].code]));a.download=E[cur].file;a.click()}
+draw();
+</script></body></html>
